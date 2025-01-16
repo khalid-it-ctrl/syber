@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Encryption Project</title>
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(-45deg, #74b9ff, #81ecec, #55efc4, #00cec9);
+            background-size: 400% 400%;
+            animation: gradient 10s ease infinite;
+            color: #333;
+            text-align: center;
+        }
+        h1 {
+            color: #2d3436;
+            font-size: 48px;
+            margin-bottom: 30px;
+        }
+        h3 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #636e72;
+        }
+        select,
+        input,
+        button {
+            font-size: 18px;
+            padding: 15px;
+            margin: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 80%;
+            outline: none;
+            box-sizing: border-box;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        select {
+            background-color: #ffffff;
+            color: #2c3e50;
+        }
+        input {
+            background-color: #ffffff;
+            color: #2c3e50;
+        }
+        button {
+            background-color: #00b894;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background-color: #00cec9;
+        }
+        #output {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 22px;
+            color: #e30909;
+        }
+        #caesar,
+        #vigenere,
+        #playfair,
+        #transposition {
+            display: none;
+            margin-top: 20px;
+        }
+        .container {
+            width: 50%;
+            padding: 30px;
+            border-radius: 10px;
+            background-color: #ffffff;
+            box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        }
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+                }
+                 }
+        .about-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background-color: #20ab1d;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0px 4px 6px rgba(197, 0, 0, 0.2);
+            cursor: pointer;}
+        .about-btn span {
+            font-size: 54px;
+            color: rgb(255, 255, 255);}
+        .about-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: rgba(150, 219, 103, 0.95);
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(182, 15, 15, 0.3);
+            text-align: center;
+            display: none;
+            z-index: 1000;}
+        @media (max-width: 600px) {
+            .about-popup {
+                width: 90%;
+                max-width: none;
+                padding: 15px;
+            }
+            .about-popup h4 {
+                font-size: 20px;
+            }
+            .about-popup p {
+                font-size: 14px;
+            }
+            .about-btn {
+                bottom: 10px;
+                right: 10px;
+                width: 45px;
+                height: 45px;
+            }
+
+            .about-btn span {
+                font-size: 20px;
+
+            }
+        }
+        .about-popup h4 {
+            margin-bottom: 10px;
+        }
+        .about-popup p {
+            font-size: 16px;
+            color: #636e72;
+        }
+        .about-popup .close-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #42e73c;
+            color: rgb(10, 6, 6);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .about-popup .close-btn:hover {
+            background-color: #92f09e;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Encryption Project</h1>
+        <select id="cipherChoice">
+            <option>Select the encryption method:</option>
+            <option value="caesar">Caesar Cipher</option>
+            <option value="vigenere">Vigenère Cipher</option>
+            <option value="playfair">Playfair Cipher</option>
+            <option value="transposition">Transposition Cipher</option>
+        </select>
+        <!-- Caesar Cipher Form -->
+        <div id="caesar">
+            <h3>Caesar Cipher</h3>
+            <input type="text" id="caesarText" placeholder="Enter text" />
+            <input type="number" id="caesarKey" placeholder="Enter key" />
+            <button onclick="caesarEncrypt()">Encrypt</button>
+            <button onclick="caesarDecrypt()">Decrypt</button>
+        </div>
+        <!-- Vigenère Cipher Form -->
+        <div id="vigenere">
+            <h3>Vigenère Cipher</h3>
+            <input type="text" id="vigenereText" placeholder="Enter text" />
+            <input type="text" id="vigenereKey" placeholder="Enter key" />
+            <button onclick="vigenereEncrypt()">Encrypt</button>
+            <button onclick="vigenereDecrypt()">Decrypt</button>
+        </div>
+        <!-- Playfair Cipher Form -->
+        <div id="playfair">
+            <h3>Playfair Cipher</h3>
+            <input type="text" id="playfairText" placeholder="Enter text" />
+            <input type="text" id="playfairKey" placeholder="Enter key" />
+            <button onclick="playfairEncrypt()">Encrypt</button>
+            <button onclick="playfairDecrypt()">Decrypt</button>
+        </div>
+        <!-- Transposition Cipher Form -->
+        <div id="transposition">
+            <h3>Transposition Cipher</h3>
+            <input type="text" id="transpositionText" placeholder="Enter text" />
+            <input type="text" id="transpositionKey" placeholder="Enter key" />
+            <button onclick="transpositionEncrypt()">Encrypt</button>
+            <button onclick="transpositionDecrypt()">Decrypt</button>
+        </div>
+        <div id="output"></div>
+    </div>
+    <div class="about-btn" onclick="togglePopup()">
+        <span> 📌 </span>
+    </div>
+    <div class="about-popup" id="aboutPopup">
+       <b> <h4>عن المشروع<h4></b>
+        <pre>
+            <B><h4>
+ أداة لتشفير وفك تشفير النصوص
+في عصرنا الرقمي أصبحت الحاجة لحماية المعلومات والبيانات أمرًا بالغ الأهمية
+يعد التشفير أحد الوسائل الأساسية لضمان أمان البيانات لذلك يهدف هذا المشروع إلى تقديم أداة
+عبر الإنترنت لتشفير النصوص وفك تشفيرها باستخدام أساليب خوارزمية متنوعة مما يساهم في تعليم
+وفهم مفاهيم التشفير
+<h3>أهداف المشروع
+</h3>
+تعزيز الأمان توفير وسيلة لتشفير النصوص وحمايتها باستخدام تقنيات متقدمة
+سهولة الاستخدام تصميم واجهة سهلة ومبسطة تمكن المستخدمين من تشفير وفك تشفير النصوص بسهولة
+التعلم والتطبيق توفير أداة تعليمية لفهم أسس علم التشفير وتطبيقه في الحياة اليومية
+الخوارزميات المستخدمة
+1 تشفير القيصر Caesar Cipher
+يعتمد على إزاحة كل حرف في النص بعدد ثابت من المواضع في الأبجدية
+هو أبسط أساليب التشفير يستخدم بشكل أساسي لأغراض تعليمية
+2 تشفير بلايفير Playfair Cipher
+يعتمد على مصفوفة 5x5 تحتوي على الحروف الأبجدية
+يعد أكثر أمانًا من قيصر بفضل التعقيد الذي يضيفه عند التشفير
+3 التشفير بالتبديل Transposition Cipher
+يعتمد على ترتيب النص في مصفوفة بناءً على كلمة مرور ويتم استخراج الأحرف بناءً على ترتيب الأعمدة المحدد
+يوفر مستوى آخر من الأمان من خلال تغيير ترتيب النصوص دون تغيير محتويات النص نفسه
+آلية العمل
+1 إدخال النص يدخل المستخدم النص الذي يرغب في تشفيره أو فك تشفيره في الحقل المخصص
+2 اختيار الخوارزمية يختار المستخدم الخوارزمية المناسبة من بين الخيارات المتاحة قيصر بلايفير أو تبديل
+3 التطبيق يقوم النظام بتطبيق الخوارزمية المحددة على النص المدخل ويعرض النتيجة
+4 عرض النتيجة يظهر النص المشفر أو المفكوك في الحقل المخصص لذلك
+المميزات
+أداة تعليمية يساعد المشروع المستخدمين على فهم وتطبيق تقنيات التشفير بشكل عملي
+سهولة التفاعل واجهة المستخدم سهلة وسلسة مما يتيح للجميع استخدامها بسهولة
+دعم الخوارزميات المتعددة يتيح للمستخدمين استخدام أكثر من خوارزمية لتشفير وفك تشفير النصوص
+التطبيقات العملية
+حماية البيانات الشخصية يمكن استخدام التطبيق لحماية المعلومات الحساسة عبر الإنترنت
+أدوات تعليمية يعد أداة مفيدة لطلاب الجامعات والمدارس لفهم التشفير بشكل عملي
+تحليل الأمان يُستخدم لفهم كيفية حماية البيانات عبر تقنيات التشفير في سياقات مختلفة
+معلومات عن صانع الموقع
+تم تصميم وتطوير هذا المشروع بواسطة خالد سمير محمد طالب في كلية صناعة وطاقة قسم تكنولوجيا المعلومات جامعة برج العرب
+اعمل على تطوير مهاراتى في مجال البرمجة والتكنولوجيا واستهدف من هذا المشروع تقديم أدوات مبتكرة ومفيدة للمستخدمين في مجال أمان البيانات وحمايتها
+الختام
+يعتبر هذا المشروع أداة مبتكرة ومفيدة لتشفير النصوص وفك تشفيرها باستخدام خوارزميات مختلفة
+ليس فقط الأداة تمنح المستخدمين أداة لتطبيق التشفير بل توفر أيضًا فرصة للتعلم وفهم الأساسيات في علم التشفير مما يساهم في تعزيز أمان البيانات وحمايتها
+        </pre></B></h4>
+        <button class="close-btn" onclick="togglePopup()">Close</button>
+    </div>
+    <script>
+        const characters = "abcdefghijklmnopqrstuvwxyz";
+        document
+            .getElementById("cipherChoice")
+            .addEventListener("change", function () {
+                const methods = ["caesar", "vigenere", "playfair", "transposition"];
+                methods.forEach(
+                    (method) => (document.getElementById(method).style.display = "none")
+                );
+                const selectedMethod = this.value;
+                if (methods.includes(selectedMethod)) {
+                    document.getElementById(selectedMethod).style.display = "block";
+                }
+            });
+        function caesarEncrypt() {
+            const text = document.getElementById("caesarText").value.toLowerCase();
+            const key = parseInt(document.getElementById("caesarKey").value);
+            let result = "";
+            for (let letter of text) {
+                if (characters.includes(letter)) {
+                    const index = characters.indexOf(letter);
+                    result += characters[(index + key) % 26];
+                } else {
+                    result += letter;
+                }
+            }
+            document.getElementById("output").innerText =
+                "Encrypted text: " + result;
+        }
+        function caesarDecrypt() {
+            const text = document.getElementById("caesarText").value.toLowerCase();
+            const key = parseInt(document.getElementById("caesarKey").value);
+            let result = "";
+            for (let letter of text) {
+                if (characters.includes(letter)) {
+                    const index = characters.indexOf(letter);
+                    result += characters[(index - key + 26) % 26];
+                } else {
+                    result += letter;
+                }
+            }
+            document.getElementById("output").innerText =
+                "Decrypted text: " + result;
+        }
+        const playfairCipher = {
+            createMatrix(key) {
+                const alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ";
+                const matrix = [];
+                const usedChars = new Set();
+                // Add key characters first
+                key
+                    .toUpperCase()
+                    .replace(/[^A-Z]/g, "")
+                    .replace(/J/g, "I")
+                    .split("")
+                    .forEach((char) => {
+                        if (!usedChars.has(char)) {
+                            usedChars.add(char);
+                            matrix.push(char);
+                        }
+                    });
+                // Add remaining alphabet
+                alphabet.split("").forEach((char) => {
+                    if (!usedChars.has(char)) {
+                        usedChars.add(char);
+                        matrix.push(char);
+                    }
+                });
+                return matrix;
+            },
+            findPosition(matrix, char) {
+                const row = Math.floor(matrix.indexOf(char) / 5);
+                const col = matrix.indexOf(char) % 5;
+                return { row, col };
+            },
+            preparePairs(text) {
+                const pairs = [];
+                let i = 0;
+                text = text
+                    .toUpperCase()
+                    .replace(/[^A-Z]/g, "")
+                    .replace(/J/g, "I");
+                while (i < text.length) {
+                    if (i === text.length - 1) {
+                        pairs.push(text[i] + "X");
+                        break;
+                     }
+                    if (text[i] === text[i + 1]) {
+                        pairs.push(text[i] + "X");
+                        i++;
+                    } else {
+                        pairs.push(text[i] + text[i + 1]);
+                        i += 2;
+                    }
+                }
+                return pairs;
+            },
+            encrypt(text, key) {
+                const matrix = this.createMatrix(key);
+                const pairs = this.preparePairs(text);
+                return pairs
+                    .map((pair) => {
+                        const pos1 = this.findPosition(matrix, pair[0]);
+                        const pos2 = this.findPosition(matrix, pair[1]);
+                        if (pos1.row === pos2.row) {
+                            return (
+                                matrix[pos1.row * 5 + ((pos1.col + 1) % 5)] +
+                                matrix[pos2.row * 5 + ((pos2.col + 1) % 5)]
+                            );
+                        }
+                        if (pos1.col === pos2.col) {
+                            return (
+                                matrix[((pos1.row + 1) % 5) * 5 + pos1.col] +
+                                matrix[((pos2.row + 1) % 5) * 5 + pos2.col]
+                            );
+                        }
+                        return (
+                            matrix[pos1.row * 5 + pos2.col] +
+                            matrix[pos2.row * 5 + pos1.col]
+                        );
+                    })
+                    .join("");
+            },
+            decrypt(text, key) {
+                const matrix = this.createMatrix(key);
+                const pairs = this.preparePairs(text);
+                return pairs
+                    .map((pair) => {
+                        const pos1 = this.findPosition(matrix, pair[0]);
+                        const pos2 = this.findPosition(matrix, pair[1]);
+                        if (pos1.row === pos2.row) {
+                            return (
+                                matrix[pos1.row * 5 + ((pos1.col + 4) % 5)] +
+                                matrix[pos2.row * 5 + ((pos2.col + 4) % 5)]
+                            );
+                        }
+                        if (pos1.col === pos2.col) {
+                            return (
+                                matrix[((pos1.row + 4) % 5) * 5 + pos1.col] +
+                                matrix[((pos2.row + 4) % 5) * 5 + pos2.col]
+                            );
+                        }
+                        return (
+                            matrix[pos1.row * 5 + pos2.col] +
+                            matrix[pos2.row * 5 + pos1.col]
+                        );
+                    })
+                    .join("");
+            },
+        };
+        function playfairEncrypt() {
+            const text = document.getElementById("playfairText").value;
+            const key = document.getElementById("playfairKey").value;
+            const result = playfairCipher.encrypt(text, key);
+            document.getElementById("output").innerText =
+                "Encrypted text: " + result;
+        }
+        function playfairDecrypt() {
+            const text = document.getElementById("playfairText").value;
+            const key = document.getElementById("playfairKey").value;
+            const result = playfairCipher.decrypt(text, key);
+            document.getElementById("output").innerText =
+                "Decrypted text: " + result;
+        }
+        const transpositionCipher = {
+            getKeyOrder(password) {
+                const chars = password.split("");
+                const sorted = [...chars].sort();
+                return chars.map((char) => sorted.indexOf(char) + 1);
+            },
+            encrypt(text, password) {
+                if (!text || !password) return "";
+                const cleanText = text.replace(/\s+/g, "");
+                const key = this.getKeyOrder(password);
+                const cols = key.length;
+                const rows = Math.ceil(cleanText.length / cols);
+                const matrix = Array(rows)
+                    .fill()
+                    .map(() => Array(cols).fill(""));
+                let pos = 0;
+                for (let row = 0; row < rows && pos < cleanText.length; row++) {
+                    for (let col = 0; col < cols && pos < cleanText.length; col++) {
+                        matrix[row][col] = cleanText[pos++];
+                    }
+                }
+                let result = "";
+                for (let i = 1; i <= cols; i++) {
+                    const col = key.indexOf(i);
+                    for (let row = 0; row < rows; row++) {
+                        if (matrix[row][col]) {
+                            result += matrix[row][col];
+                        }
+                    }
+                }
+                return result;
+            },
+            decrypt(text, password) {
+                if (!text || !password) return "";
+                const key = this.getKeyOrder(password);
+                const cols = key.length;
+                const rows = Math.ceil(text.length / cols);
+                const matrix = Array(rows)
+                    .fill()
+                    .map(() => Array(cols).fill(""));
+                const charsPerCol = Math.ceil(text.length / cols);
+                let pos = 0;
+                for (let i = 1; i <= cols; i++) {
+                    const col = key.indexOf(i);
+                    for (let row = 0; row < rows && pos < text.length; row++) {
+                        matrix[row][col] = text[pos++];
+                    }
+                }
+                let result = "";
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < cols; col++) {
+                        if (matrix[row][col]) {
+                            result += matrix[row][col];
+                        }
+                    }
+                }
+                return result;
+            },
+        };
+        function transpositionEncrypt() {
+            const text = document.getElementById("transpositionText").value;
+            const password = document.getElementById("transpositionKey").value;
+            const result = transpositionCipher.encrypt(text, password);
+            document.getElementById("output").innerText =
+                "Encrypted text: " + result;
+        }
+        function transpositionDecrypt() {
+            const text = document.getElementById("transpositionText").value;
+            const password = document.getElementById("transpositionKey").value;
+            const result = transpositionCipher.decrypt(text, password);
+            document.getElementById("output").innerText =
+                "Decrypted text: " + result;
+        }
+        function togglePopup() {
+            const popup = document.getElementById("aboutPopup");
+            popup.style.display =
+                popup.style.display === "block" ? "none" : "block";
+        }
+    </script>
+</body>
+</html>
